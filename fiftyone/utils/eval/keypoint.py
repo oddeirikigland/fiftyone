@@ -547,7 +547,8 @@ def _compute_bbox_ious(preds, gts, classwise):
                 dist = _compute_distance(
                     point1=pred.points[0], point2=gt.points[0]
                 )
-                iou = min(dist, 1)
+                max_dist = 1.5
+                iou = min(max_dist - dist, 1)
             ious[i, j] = iou
     return ious
 
