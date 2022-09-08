@@ -13,12 +13,11 @@ import numpy as np
 import eta.core.utils as etau
 
 import fiftyone.core.plots as fop
-import fiftyone.utils.iou as foui
 
 from .keypoint import (
     KeypointEvaluation,
-    KeypointEvaluationConfig,
     KeypointResults,
+    KeypointEvaluationConfig,
 )
 
 
@@ -433,8 +432,10 @@ def _compute_bbox_ious(preds, gts, classwise):
             elif classwise and pred.label != gt.label:
                 continue
             else:
-                # TODO: find distance between points
-                iou = 0.3
+                dist = _compute_distance(
+                    point1=pred.points[0], point2=gt.points[0]
+                )
+                iou = min(dist, 1)
             ious[i, j] = iou
     return ious
 
@@ -762,3 +763,9 @@ def _copy_labels(labels):
         _label.id = label.id
 
     return _labels
+
+
+def _compute_distance(point1, point2):
+    return np.sqrt(
+        ((point1[0] - point2[1])) ** 2 + ((point1[0] - point2[1]) ** 2)
+    )
