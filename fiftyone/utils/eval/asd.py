@@ -116,7 +116,6 @@ class AsdEvaluation(KeypointEvaluation):
             gts = _copy_labels(gts)
             preds = _copy_labels(preds)
 
-        a = 4
         return _asd_evaluation(gts, preds, eval_key, self.config)
 
     def generate_results(
@@ -421,6 +420,25 @@ def _coco_evaluation_iou_sweep(gts, preds, config):
     ]
 
 
+def _compute_bbox_ious(preds, gts, classwise):
+    is_symmetric = preds is gts
+    gt_crowds = [False] * len(gts)
+    ious = np.zeros((len(preds), len(gts)))
+    for j, (gt, gt_crowd) in enumerate(zip(gts, gt_crowds)):
+        for i, pred in enumerate(preds):
+            if is_symmetric and i < j:
+                iou = ious[j, i]
+            elif is_symmetric and i == j:
+                iou = 1
+            elif classwise and pred.label != gt.label:
+                continue
+            else:
+                # TODO: find distance between points
+                iou = 0.3
+            ious[i, j] = iou
+    return ious
+
+
 def compute_key_point_dist(
     preds,
     gts,
@@ -433,8 +451,9 @@ def compute_key_point_dist(
 ):
     # Compute ``num_preds x num_gts`` IoUs
     # if not preds or not gts:
-    return np.zeros((len(preds), len(gts)))
-    a = 4
+    if not preds or not gts:
+        return np.zeros((len(preds), len(gts)))
+    return _compute_bbox_ious(preds, gts, classwise=classwise)
 
 
 def _asd_evaluation_setup(
