@@ -38,25 +38,15 @@ def evaluate_keypoints(
     **kwargs,
 ):
     fov.validate_collection_label_fields(
-        samples,
-        (pred_field, gt_field),
-        (fol.Detections, fol.Polylines, fol.TemporalDetections),
-        same_type=True,
+        samples, (pred_field, gt_field), (fol.Keypoints), same_type=True
     )
 
     label_type = samples._get_label_field_type(gt_field)
-    is_temporal = issubclass(label_type, fol.TemporalDetections)
-
-    if is_temporal:
-        fov.validate_video_collection(samples)
-    else:
-        kwargs.update(dict(use_masks=use_masks, use_boxes=use_boxes))
 
     config = _parse_config(
         pred_field,
         gt_field,
         method,
-        is_temporal,
         iou=iou,
         classwise=classwise,
         **kwargs,
@@ -129,7 +119,7 @@ def evaluate_keypoints(
     return results
 
 
-class DetectionEvaluationConfig(foe.EvaluationMethodConfig):
+class KeypointEvaluationConfig(foe.EvaluationMethodConfig):
     """Base class for configuring :class:`DetectionEvaluation` instances.
 
     Args:
@@ -165,7 +155,7 @@ class DetectionEvaluationConfig(foe.EvaluationMethodConfig):
         return False
 
 
-class DetectionEvaluation(foe.EvaluationMethod):
+class KeypointEvaluation(foe.EvaluationMethod):
     """Base class for detection evaluation methods.
 
     Args:
@@ -230,7 +220,7 @@ class DetectionEvaluation(foe.EvaluationMethod):
         Returns:
             a :class:`DetectionResults`
         """
-        return DetectionResults(
+        return KeypointResults(
             matches,
             eval_key=eval_key,
             gt_field=self.config.gt_field,
@@ -320,7 +310,7 @@ class DetectionEvaluation(foe.EvaluationMethod):
         self._validate_fields_match(eval_key, "gt_field", existing_info)
 
 
-class DetectionResults(BaseEvaluationResults):
+class KeypointResults(BaseEvaluationResults):
     """Class that stores the results of a detection evaluation.
 
     Args:
@@ -414,29 +404,10 @@ class DetectionResults(BaseEvaluationResults):
         )
 
 
-def _parse_config(pred_field, gt_field, method, is_temporal, **kwargs):
-    if method is None:
-        if is_temporal:
-            method = "activitynet"
-        else:
-            method = "coco"
+def _parse_config(pred_field, gt_field, method, **kwargs):
+    from .asd import AsdEvaluationConfig
 
-    if method == "activitynet":
-        from .activitynet import ActivityNetEvaluationConfig
-
-        return ActivityNetEvaluationConfig(pred_field, gt_field, **kwargs)
-
-    if method == "coco":
-        from .coco import COCOEvaluationConfig
-
-        return COCOEvaluationConfig(pred_field, gt_field, **kwargs)
-
-    if method == "open-images":
-        from .openimages import OpenImagesEvaluationConfig
-
-        return OpenImagesEvaluationConfig(pred_field, gt_field, **kwargs)
-
-    raise ValueError("Unsupported evaluation method '%s'" % method)
+    return AsdEvaluationConfig(pred_field, gt_field, **kwargs)
 
 
 def _tally_matches(matches):
