@@ -812,12 +812,16 @@ def _from_polygonlabels(result):
 
 def _from_keypointlabels(result):
     keypoints = []
-    group_fn = lambda x: x["value"]["keypointlabels"][0]
-    for key, group in itertools.groupby(result, group_fn):
-        points = [(one["value"]["x"], one["value"]["y"]) for one in group]
-        points = _normalize_values(points)
-        keypoints.append(fol.Keypoint(label=key, points=points))
-
+    # group_fn = lambda x: x["value"]["keypointlabels"][0]
+    # for key, group in itertools.groupby(result, group_fn):
+    #     points = [(one["value"]["x"], one["value"]["y"]) for one in group]
+    #     points = _normalize_values(points)
+    #     keypoints.append(fol.Keypoint(label=key, points=points))
+    for key_point in result:
+        key = key_point["value"]["keypointlabels"][0]
+        point = [(key_point["value"]["x"], key_point["value"]["y"])]
+        point = _normalize_values(point)
+        keypoints.append(fol.Keypoint(label=key, points=point,confidence=[.97], asd="yoo"))
     return keypoints
 
 
