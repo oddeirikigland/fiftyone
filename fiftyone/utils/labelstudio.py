@@ -821,7 +821,7 @@ def _from_keypointlabels(result):
         key = key_point["value"]["keypointlabels"][0]
         point = [(key_point["value"]["x"], key_point["value"]["y"])]
         point = _normalize_values(point)
-        keypoints.append(fol.Keypoint(label=key, points=point,confidence=[.97], asd="yoo"))
+        keypoints.append(fol.Keypoint(label=key, points=point, confidence=[1]))
     return keypoints
 
 
