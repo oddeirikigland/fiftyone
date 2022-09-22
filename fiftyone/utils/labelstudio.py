@@ -352,10 +352,12 @@ class LabelStudioAnnotationAPI(foua.AnnotationAPI):
                 if len(annotations) == 0
                 else sorted(annotations, key=lambda x: x["updated_at"])[-1]
             )
+            labels = []
             if label_type == "keypoints":
-                labels = import_label_studio_annotation(
-                    latest_annotation["result"]
-                )
+                if latest_annotation["result"]:
+                    labels = import_label_studio_annotation(
+                        latest_annotation["result"]
+                    )
             else:
                 labels = [
                     import_label_studio_annotation(r)
