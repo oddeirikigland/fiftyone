@@ -2449,6 +2449,34 @@ class SampleCollection(object):
             classwise=classwise,
             **kwargs,
         )
+    def evaluate_keypoints(
+        self,
+        pred_field,
+        gt_field="ground_truth",
+        eval_key=None,
+        classes=None,
+        missing=None,
+        method=None,
+        iou=0.50,
+        use_masks=False,
+        use_boxes=False,
+        classwise=True,
+        **kwargs,
+    ):
+        return foue.evaluate_keypoints(
+            self,
+            pred_field,
+            gt_field=gt_field,
+            eval_key=eval_key,
+            classes=classes,
+            missing=missing,
+            method=method,
+            iou=iou,
+            use_masks=use_masks,
+            use_boxes=use_boxes,
+            classwise=classwise,
+            **kwargs,
+        )
 
     def evaluate_segmentations(
         self,

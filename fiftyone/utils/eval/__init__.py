@@ -24,6 +24,7 @@ from .segmentation import (
     evaluate_segmentations,
     SegmentationResults,
 )
+from .keypoint import evaluate_keypoints, KeypointResults
 
 # This tells Sphinx to allow refs to imported objects in this module
 # https://stackoverflow.com/a/31594545/16823653
