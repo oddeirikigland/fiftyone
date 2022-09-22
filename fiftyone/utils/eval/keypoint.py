@@ -548,7 +548,7 @@ def _compute_bbox_ious(preds, gts, classwise):
                     point1=pred.points[0], point2=gt.points[0]
                 )
                 max_dist = 1.5
-                iou = min(max_dist - dist, 1)
+                iou = (max_dist - dist) / max_dist
             ious[i, j] = iou
     return ious
 
@@ -880,7 +880,7 @@ def _copy_labels(labels):
 
 def _compute_distance(point1, point2):
     return np.sqrt(
-        ((point1[0] - point2[1])) ** 2 + ((point1[0] - point2[1]) ** 2)
+        ((point1[0] - point2[0])) ** 2 + ((point1[1] - point2[1]) ** 2)
     )
 
 
