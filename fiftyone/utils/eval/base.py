@@ -57,7 +57,7 @@ class BaseEvaluationResults(foe.EvaluationResults):
 
         self.ytrue = np.asarray(ytrue)
         self.ypred = np.asarray(ypred)
-        self.confs = np.asarray(confs) if confs is not None else None
+        self.confs = None  # np.asarray(confs) if confs is not None else None
         self.weights = np.asarray(weights) if weights is not None else None
         self.eval_key = eval_key
         self.gt_field = gt_field
