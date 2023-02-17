@@ -73,7 +73,7 @@ def evaluate_keypoints(
     eval_method.ensure_requirements()
 
     eval_method.register_run(samples, eval_key)
-    eval_method.register_samples(samples)
+    eval_method.register_samples(samples, eval_key)
 
     if config.requires_additional_fields:
         _samples = samples
